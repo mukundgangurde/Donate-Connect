@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🩸 Donate & Connect</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script defer src="/static/script.js"></script>
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-1y+u0v4T8Np6EpXcC9Gv7D2p4S7hWFS62j9o0P+0lH0=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-XQoYMqMTK8Lvdl4gDPf2Q7C+N2fPhbQYg1MkR7rN3uU=" crossorigin=""></script>
+
+</head>
+
+<body>
+
+    <!-- Navigation Bar Start -->
+    <nav>
+        <div class="nav-container">
+            <!-- Logo: Clicking this takes the user to the home page -->
+            <a href="/" class="logo">🩸 Donate & Connect</a>
+            <!-- Navigation Links -->
+            <ul class="nav-right">
+                {% if user %}
+                <!-- Show these links if the user is logged in -->
+                <li><a href="/">📊 Dashboard</a></li>
+                <li><a href="/map">🔍 Find Blood</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                <li><a href="/profile" class="profile-info">
+                        <span class="profile-circle">{{ user.name[0] }}</span> Profile</a>
+                </li>
+                <li><a href="/logout" class="btn">Logout</a></li>
+                {% else %}
+                <!-- Show these links if the user is not logged in -->
+                <li><a href="/map">🔍 Find Blood</a></li>
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                <li><a href="/login" class="btn">Login</a></li>
+                <li><a href="/register_donor" class="btn register">Register</a></li>
+                {% endif %}
+
+
+
+            </ul>
+        </div>
+    </nav>
+    <!-- Navigation Bar End -->
+
+
+    {% if user %}
+    <section id="dashboard" class="w-container">
+        <div class="welcome">
+            <h2>{{user.name.capitalize()}} Welcome to Dashboard....</h2>
+            <p>We're glad to have you back! Ready to save lives and make a difference?</p>
+            <p>Explore the tools and options below to connect with those in need and contribute to a healthier
+                community.</p>
+            <hr>
+        </div>
+
+        <div class="w-cards">
+            <!-- Card 1: Set Up Your Profile -->
+            {% if not profile_completed %}
+            <!-- Card 1: Set Up Your Profile -->
+            <div class="w-card">
+                <h3>Set Up Your Profile</h3>
+                <p>Complete your profile to become a verified donor and make a greater impact.</p>
+                <button onclick="location.href='/profile'">Profile</button>
+            </div>
+            {% else %}
+            <!-- Profile Completed View -->
+            <div class="w-card">
+                <h3>Profile Completed</h3>
+                <p>Your profile is complete! You are now visible on the map as a donor.</p>
+                <button onclick="location.href='/map'">View on Map</button>
+            </div>
+            {% endif %}
+
+            <!-- Card 2: Donation History -->
+            <div class="w-card">
+                <h3>Donation History</h3>
+                {% if donation_history %}
+                <p>Here are your recent donations:</p>
+                {% for donation in donation_history %}
+                {{ donation.date }}
+                {% endfor %}
+                {% else %}
+                <p>No donation history available.</p>
+                {% endif %}
+                <!-- <button onclick="location.href='/profile'">View History</button> -->
+            </div>
+
+            <!-- Card 3: Emergency Alerts -->
+            <div class="w-card alerts">
+                <h3>Emergency Alerts</h3>
+                <p>Get notified when urgent blood donations are needed in your vicinity.</p>
+                <!-- <button onclick="location.href='/alerts'">View Alerts</button> -->
+            </div>
+        </div>
+    </section>
+
+    {% else %}
+
+    <!-- Hero Section -->
+    <!-- Example: Add this in the header or hero section -->
+
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>Donate Blood, Save Lives</h1>
+            <p>Every drop counts. Join us in saving lives.</p>
+            <div class="hero-buttons">
+                <a href="/register_donor" class="cta-button">Become a Donor</a>
+                <a href="/login" class="cta-button secondary">Login</a>
+            </div>
+        </div>
+    </section>
+
+    {% endif %}
+
+    <!-- Search Filter Section -->
+    <section id="search">
+        <div class="container">
+            <h2>Find Blood or Blood Bank</h2>
+            <p>Search for donors or blood banks near you and help save lives.</p>
+
+            <!-- <form>
+                <div class="search-group">
+                    <label for="city">Enter City:</label>
+                    <input type="text" id="city" placeholder="Enter City Name">
+                </div>
+
+                <div class="search-group">
+                    <label for="blood-group">Select Blood Group:</label>
+                    <select id="blood-group">
+                        <option value="">Select Blood Group</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                </div> -->
+
+            <a href="/map" class="btn">View MAP</a>
+            </form>
+
+            <div class="search-info">
+                <p>💉 <b>Blood Availability:</b> Find blood from verified donors in real-time.</p>
+                <p>🏥 <b>Nearest Blood Banks:</b> Locate registered blood banks quickly.</p>
+                <p>🔔 <b>Emergency Alerts:</b> Get notified when urgent blood donations are needed.</p>
+            </div>
+        </div>
+    </section>
+
+
+
+
+    <!-- Benefits Section -->
+    <section id="benefits">
+        <div class="container">
+            <h2 class="section-heading">Why Donate Blood?</h2>
+            <p class="section-subtext">Donating blood is a noble cause. Here’s why you should consider it:</p>
+
+            <div class="benefits">
+                <div class="card">
+                    <h3>❤️ Saves Lives</h3>
+                    <p>Your donation can help accident victims and patients in need.</p>
+                </div>
+                <div class="card">
+                    <h3>🩸 Improves Health</h3>
+                    <p>Regular donation can reduce the risk of heart disease and improve circulation.</p>
+                </div>
+                <div class="card">
+                    <h3>💪 Boosts Energy</h3>
+                    <p>Helps in the production of new blood cells, keeping you healthier.</p>
+                </div>
+                <div class="card">
+                    <h3>🔄 Free Health Checkup</h3>
+                    <p>Every donor receives a free mini health screening before donation.</p>
+                </div>
+                <div class="card">
+                    <h3>🤝 Community Impact</h3>
+                    <p>Be a hero in someone's life by contributing to the well-being of society.</p>
+                </div>
+                <div class="card">
+                    <h3>🕒 Quick & Easy</h3>
+                    <p>The entire blood donation process is simple and takes less than an hour.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- Footer Section -->
+    <footer id="contact">
+        <div class="footer-container">
+            <!-- Contact Info -->
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> <a href="mailto:bloodbank@example.com">bloodbank@example.com</a>
+                </p>
+                <p><i class="fas fa-phone"></i> <a href="tel:+1234567890">+123 456 7890</a></p>
+                <p><i class="fas fa-map-marker-alt"></i> Kalyan, India</p>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="/"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="/about"><i class="fas fa-info-circle"></i> About Us</a></li>
+                    <li><a href="#search"><i class="fas fa-search"></i> Find Blood</a></li>
+                    <li><a href="/register_donor"><i class="fas fa-user-plus"></i> Register</a></li>
+                </ul>
+            </div>
+
+            <!-- Social Media Links -->
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="footer-bottom">
+            <p>&copy; 2025 Blood Bank. All rights reserved. Third-party content is used under respective licenses.</p>
+        </div>
+    </footer>
+
+    <!-- Font Awesome for Icons -->
+    <script src="https://kit.fontawesome.com/8b0c105e67.js" crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

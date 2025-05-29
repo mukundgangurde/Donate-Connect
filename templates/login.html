@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Blood Bank</title>
+    <style>
+        /* Reset default browser styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* Navbar start... */
+        /* Navigation Bar Styles */
+        nav {
+            position: fixed;
+            /* Keeps the nav bar fixed at the top */
+            top: 0;
+            width: 100%;
+            background: crimson;
+            /* Background color */
+            padding: 15px;
+            z-index: 1000;
+            /* Ensures the nav stays on top */
+            box-shadow: 0px 0px 10px black;
+            /* Subtle shadow effect */
+
+        }
+
+        /* Container for Navigation Bar */
+        .nav-container {
+            display: flex;
+            align-items: center;
+            /* Vertically center the items */
+            justify-content: center;
+            /* Horizontally center the items */
+            max-width: 1200px;
+            margin: 0 auto;
+            /* Center the container itself on the page */
+        }
+
+        /* Logo Styles */
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            margin-right: auto;
+            /* Pushes other nav items to the right */
+        }
+
+        /* Navigation Links Container */
+        .nav-right {
+            list-style: none;
+            /* Removes default bullet points */
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            /* Space between items */
+            padding: 10px;
+            margin: 0;
+        }
+
+        /* Individual Navigation Link Styles */
+        .nav-right a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        /* Button Styles for Login & Register Links */
+        .nav-right li .btn {
+            background: white;
+            color: crimson;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Additional Styling for Register Button */
+        .nav-right li .register {
+            background: black;
+            color: white;
+        }
+
+        /* Navbar end... */
+
+        /* Login Section */
+        .login-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #ff9999;
+            padding-top: 80px;
+            /* To avoid overlap with fixed navbar */
+        }
+
+        .login-container {
+            background: white;
+            padding: 50px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: crimson;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: crimson;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: darkred;
+        }
+
+        .register-text {
+            margin-top: 15px;
+            font-size: 16px;
+        }
+
+        .register-text a {
+            color: crimson;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar Start -->
+    <nav>
+        <div class="nav-container">
+            <!-- Logo: Clicking this takes the user to the home page -->
+            <a href="/" class="logo">🩸 Donate & Connect</a>
+            <!-- Navigation Links -->
+            <ul class="nav-right">
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                <!-- Buttons for Login and Register -->
+                <li><a href="/register_donor" class="btn register">Register</a></li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Navigation Bar End -->
+
+    <!-- Login Section -->
+    <section class="login-section">
+        <div class="login-container">
+            <h2>Login</h2>
+            <form action="#" method="POST">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+            </form>
+            <p class="register-text">Not registered? <a href="register.html">Create an account</a></p>
+        </div>
+    </section>
+
+</body>
+
+</html>

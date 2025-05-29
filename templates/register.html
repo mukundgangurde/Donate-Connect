@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Donate & Connect</title>
+
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script> <!-- Google Maps API (new) -->
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBjpD2fJp9DRF7RJQ1gSWHsofmi0_nI7i4"></script>
+
+    <!-- Include Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: crimson;
+            text-align: center;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        /* Navbar start... */
+        /* Navigation Bar Styles */
+        nav {
+            position: fixed;
+            /* Keeps the nav bar fixed at the top */
+            top: 0;
+            width: 100%;
+            background: crimson;
+            /* Background color */
+            padding: 15px;
+            z-index: 1000;
+            /* Ensures the nav stays on top */
+            box-shadow: 0px 0px 10px black;
+            /* Subtle shadow effect */
+
+        }
+
+        /* Container for Navigation Bar */
+        .nav-container {
+            display: flex;
+            align-items: center;
+            /* Vertically center the items */
+            justify-content: center;
+            /* Horizontally center the items */
+            max-width: 1200px;
+            margin: 0 auto;
+            /* Center the container itself on the page */
+        }
+
+        /* Logo Styles */
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            margin-right: auto;
+            /* Pushes other nav items to the right */
+        }
+
+        /* Navigation Links Container */
+        .nav-right {
+            list-style: none;
+            /* Removes default bullet points */
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            /* Space between items */
+            padding: 10px;
+            margin: 0;
+        }
+
+        /* Individual Navigation Link Styles */
+        .nav-right a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        /* Button Styles for Login & Register Links */
+        .nav-right li .btn {
+            background: white;
+            color: crimson;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Navbar end... */
+
+        .form-section {
+            padding: 120px 20px;
+            text-align: center;
+        }
+
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            text-align: left;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input,
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #consent {
+            width: 5%;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin: 5px;
+        }
+
+        .input-group input,
+        .checkbox-group input,
+        .input-group textarea {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .map-placeholder {
+            margin: 20px 0;
+            height: 300px;
+            /* Ensure this height is set */
+            width: 100%;
+            /* Ensure the width is set */
+            background-color: #ddd;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .btn {
+            background: crimson;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #e84118;
+        }
+
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 10px;
+        }
+
+
+        #location-status {
+            /* margin-top: 10px; */
+            font-size: 14px;
+            color: #555;
+            text-align: center;
+        }
+
+        #alertBox {
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .toggle-group {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .toggle-group button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        .toggle-group .active {
+            background-color: crimson;
+            color: white;
+        }
+
+        .toggle-group button:not(.active) {
+            background-color: #f8f8f8;
+            color: crimson;
+            border: 1px solid crimson;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        footer {
+            background: #d9534f;
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Bar Start -->
+    <nav>
+        <div class="nav-container">
+            <!-- Logo: Clicking this takes the user to the home page -->
+            <a href="/" class="logo">🩸 Donate & Connect</a>
+            <!-- Navigation Links -->
+            <ul class="nav-right">
+                <li><a href="/about">About Us</a></li>
+                <li><a href="/contact">Contact Us</a></li>
+                <!-- Buttons for Login and Register -->
+                <li><a href="/login" class="btn">Login</a></li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Navigation Bar End -->
+
+    <section class="form-section">
+        <div class="form-container">
+            <h2>Register as a Blood Donor or Blood Bank</h2>
+            <!-- Toggle Buttons -->
+            <div class="toggle-group">
+                <button id="donorToggle" class="active" onclick="showForm('donor')">Blood Donor</button>
+                <button id="bankToggle" onclick="showForm('bank')">Blood Bank</button>
+            </div>
+
+            <!-- Donor Registration Form -->
+            <form id="donorForm" action="/register_donor" method="POST" onsubmit="return validatePassword()">
+                <label>Full Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+
+                <label>Date of Birth:</label>
+                <input type="date" id="dob" name="dob" required>
+
+                <label>Phone Number:</label>
+                <input type="tel" id="phone" name="phone" maxlength="10" pattern="\d{10}"
+                    placeholder="Enter your phone number" required
+                    oninvalid="this.setCustomValidity('Please enter a valid 10-digit phone number')"
+                    oninput="this.setCustomValidity('')">
+
+
+                <label>Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email (e.g., user@example.com)"
+                    required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                    title="Please enter a valid email address (e.g., user@example.com)">
+
+
+                <label>Full Address:</label>
+                <input type="text" id="address" name="address" placeholder="Enter your full address" required>
+
+                <label>State:</label>
+                <input type="text" id="state" name="state" required>
+
+                <label>City:</label>
+                <input type="text" id="city" name="city" required>
+
+                <label>Pincode:</label>
+                <input type="text" id="pincode" name="pincode" maxlength="6" pattern="\d{6}"
+                    title="Please enter a valid 6-digit pincode" required>
+
+                <label>Blood Group:</label>
+                <select id="bloodGroup" name="bloodgroup" required>
+                    <option value="">Select Blood Group</option>
+                    <option value="A+">A+</option>
+                    <option value="A-">A-</option>
+                    <option value="B+">B+</option>
+                    <option value="B-">B-</option>
+                    <option value="O+">O+</option>
+                    <option value="O-">O-</option>
+                    <option value="AB+">AB+</option>
+                    <option value="AB-">AB-</option>
+                </select>
+
+
+
+                <!-- Password Field -->
+                <label for="password">Enter Password</label>
+                <input type="password" id="password" name="password" required>
+                <small class="password_error" style="color: red; display: none;">Passwords do not match</small>
+
+                <!-- Confirm Password Field -->
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="donor_confirm_password" name="confirm_password" required>
+                <small class="password_error" style="color: red; display: none;">Passwords do not match</small>
+
+                <!-- <div id="errorMessage"></div> -->
+
+                <label>
+                    <input type="checkbox" id="donor_consent" required>
+                    I agree to donate blood and be contacted for donation.
+                </label>
+                <!-- Alert Box -->
+                <div id="alertBox"></div>
+
+                <button type="submit" class="btn">Register</button>
+
+            </form>
+
+            <!-- Blood Bank Registration Form -->
+            <form id="bankForm" class="hidden" action="/register_bank" method="POST">
+                <label>Blood Bank Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter the blood bank name" required>
+
+                <label>Phone Number:</label>
+                <input type="tel" id="phone" name="phone" maxlength="10" pattern="\d{10}"
+                    placeholder="Enter your phone number" required
+                    oninvalid="this.setCustomValidity('Please enter a valid 10-digit phone number')"
+                    oninput="this.setCustomValidity('')">
+
+
+                <label>Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email (e.g., user@example.com)"
+                    required pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                    title="Please enter a valid email address (e.g., user@example.com)">
+
+
+                <label>Full Address:</label>
+                <input type="text" id="address" name="address" placeholder="Enter your full address" required>
+
+                <label>State:</label>
+                <input type="text" id="state" name="state" required>
+
+                <label>City:</label>
+                <input type="text" id="city" name="city" required>
+
+                <label>Pincode:</label>
+                <input type="text" id="pincode" name="pincode" maxlength="6" pattern="\d{6}"
+                    title="Please enter a valid 6-digit pincode" required>
+
+                <div class="input-group">
+                    <label>Location (Select on Map)</label>
+                    <div class="map-placeholder" id="map"></div>
+                    <p>Click on the map to select your location or locate yourself by clicking the "Detect Location"
+                        button
+                        below.</p>
+                    <button type="button" class="btn" onclick="detectLocation()">📍 Detect My Location</button>
+                    <input type="hidden" name="latitude" id="latitude">
+                    <input type="hidden" name="longitude" id="longitude">
+                    <p id="location-status"></p>
+                </div>
+
+                <label for="password">Enter Password</label>
+                <input type="password" id="password" name="password" required>
+                <small class="password_error" style="color: red; display: none;">Passwords do not match</small>
+
+                <!-- Confirm Password Field -->
+                <label for="confirm_password">Confirm Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+                <small class="password_error" style="color: red; display: none;">Passwords do not match</small>
+
+                <label>
+                    <input type="checkbox" id="consent" required>
+                    I agree the above information provided is correct.
+                </label>
+                <!-- Alert Box -->
+                <div id="alertBox"></div>
+
+                <button type="submit" class="btn">Register as Blood Bank</button>
+            </form>
+
+            <p>Already have an account? <a href="/login">Login</a></p>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Donate & Connect. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Toggle between donor and bank forms
+        function showForm(type) {
+            const donorForm = document.getElementById('donorForm');
+            const bankForm = document.getElementById('bankForm');
+            const donorToggle = document.getElementById('donorToggle');
+            const bankToggle = document.getElementById('bankToggle');
+
+            if (type === 'donor') {
+                donorForm.classList.remove('hidden');
+                bankForm.classList.add('hidden');
+                donorToggle.classList.add('active');
+                bankToggle.classList.remove('active');
+            } else if (type === 'bank') {
+                donorForm.classList.add('hidden');
+                bankForm.classList.remove('hidden');
+                donorToggle.classList.remove('active');
+                bankToggle.classList.add('active');
+
+                // Reinitialize the map for the blood bank form
+                setTimeout(() => {
+                    map.invalidateSize(); // Fixes map rendering issues
+                }, 100);
+            }
+        }
+
+        // Attach password match validation to any form
+        function attachPasswordValidation(formId) {
+            const form = document.getElementById(formId);
+            const password = form.querySelector('input[name="password"]');
+            const confirm = form.querySelector('input[name="confirm_password"]');
+            const error = form.querySelector('.password_error');
+
+            confirm.addEventListener('input', () => {
+                if (password.value !== confirm.value) {
+                    error.style.display = 'inline';
+                } else {
+                    error.style.display = 'none';
+                }
+            });
+
+            form.addEventListener('submit', function (e) {
+                if (password.value !== confirm.value) {
+                    e.preventDefault();
+                    error.style.display = 'inline';
+                }
+            });
+        }
+
+        attachPasswordValidation('donorForm');
+        attachPasswordValidation('bankForm');
+
+        // MAP
+        document.addEventListener("DOMContentLoaded", function () {
+            // Initialize the map
+            var map = L.map('map').setView([20.5937, 78.9629], 5); // Default to India
+
+            // Load Google Maps tiles
+            L.tileLayer('https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+                attribution: '© Google Maps'
+            }).addTo(map);
+
+            var marker;
+
+            // Function to update marker & coordinates when map is clicked
+            function onMapClick(e) {
+                if (marker) {
+                    map.removeLayer(marker);
+                }
+                marker = L.marker(e.latlng).addTo(map);
+                document.getElementById("latitude").value = e.latlng.lat;
+                document.getElementById("longitude").value = e.latlng.lng;
+                document.getElementById("location-status").innerText =
+                    `Selected Location: (${e.latlng.lat}, ${e.latlng.lng})`;
+            }
+
+            map.on('click', onMapClick);
+
+            // Detect user's current location
+            window.detectLocation = function () {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function (position) {
+                            var userLat = position.coords.latitude;
+                            var userLng = position.coords.longitude;
+
+                            // Center the map on the detected location
+                            map.setView([userLat, userLng], 13);
+
+                            // Update marker
+                            if (marker) {
+                                map.removeLayer(marker);
+                            }
+                            marker = L.marker([userLat, userLng]).addTo(map);
+
+                            // Update input fields
+                            document.getElementById("latitude").value = userLat;
+                            document.getElementById("longitude").value = userLng;
+
+                            // Update location status
+                            document.getElementById("location-status").innerText =
+                                `Detected Location: (${userLat}, ${userLng})`;
+                        },
+                        function () {
+                            document.getElementById("location-status").innerText = "Error: Unable to retrieve location.";
+                        }
+                    );
+                } else {
+                    document.getElementById("location-status").innerText = "Geolocation is not supported by this browser.";
+                }
+            };
+
+            // Reinitialize the map when switching forms
+            document.getElementById('bankToggle').addEventListener('click', function () {
+                setTimeout(() => {
+                    map.invalidateSize(); // Fixes map rendering issues
+                }, 100);
+            });
+        });
+        // MAP
+
+
+        // Set max date for DOB
+        const dob = document.getElementById('dob');
+        if (dob) {
+            dob.setAttribute('max', new Date().toISOString().split('T')[0]);
+            dob.addEventListener('click', () => dob.showPicker?.());
+        }
+
+        document.getElementById('donorForm').onsubmit = async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch('/register_donor', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                const alertBox = document.getElementById('alertBox');
+
+                // Display the alert box with the response message
+                alertBox.innerText = result.message;
+                alertBox.className = response.status === 200 ? 'success' : 'error';
+                alertBox.style.display = 'block';
+
+                // Hide the alert box automatically after 5 seconds
+                setTimeout(() => alertBox.style.display = 'none', 5000);
+
+                if (response.status === 200) {
+                    this.reset();  // Clear form if registration is successful
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        document.getElementById('bankForm').onsubmit = async function (event) {
+            event.preventDefault();
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch('/register_bank', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                const alertBox = this.querySelector('#alertBox');
+
+                alertBox.innerText = result.message;
+                alertBox.className = response.status === 200 ? 'success' : 'error';
+                alertBox.style.display = 'block';
+
+                setTimeout(() => alertBox.style.display = 'none', 5000);
+
+                if (response.status === 200) {
+                    this.reset();
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Ensure bankForm also validates location before submission
+        document.getElementById("bankForm").addEventListener("submit", function (e) {
+            const lat = document.getElementById("latitude").value;
+            const lon = document.getElementById("longitude").value;
+
+            if (!lat || !lon) {
+                e.preventDefault(); // Stop form submission
+                document.getElementById("location-status").textContent = "📍 Please select a location on the map.";
+                document.getElementById("location-status").style.color = "red";
+            }
+        });
+
+
+
+    </script>
+
+</body>
+
+</html>

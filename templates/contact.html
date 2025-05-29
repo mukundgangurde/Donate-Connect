@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Donate & Connect</title>
+    <style>
+        /* Reset Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+        }
+
+        /* Navbar start... */
+        /* Navigation Bar Styles */
+        nav {
+            position: fixed;
+            /* Keeps the nav bar fixed at the top */
+            top: 0;
+            width: 100%;
+            background: crimson;
+            /* Background color */
+            padding: 15px;
+            z-index: 1000;
+            /* Ensures the nav stays on top */
+            box-shadow: 0px 0px 10px black;
+            /* Subtle shadow effect */
+
+        }
+
+        /* Container for Navigation Bar */
+        .nav-container {
+            display: flex;
+            align-items: center;
+            /* Vertically center the items */
+            justify-content: center;
+            /* Horizontally center the items */
+            max-width: 1200px;
+            margin: 0 auto;
+            /* Center the container itself on the page */
+        }
+
+        /* Logo Styles */
+        .logo {
+            font-size: 22px;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+            margin-right: auto;
+            /* Pushes other nav items to the right */
+        }
+
+        /* Navigation Links Container */
+        .nav-right {
+            list-style: none;
+            /* Removes default bullet points */
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            /* Space between items */
+            padding: 10px;
+            margin: 0;
+        }
+
+        /* Individual Navigation Link Styles */
+        .nav-right a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+        }
+
+        /* Button Styles for Login & Register Links */
+        .nav-right li .btn {
+            background: white;
+            color: crimson;
+            padding: 10px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Additional Styling for Register Button */
+        .nav-right li .register {
+            background: black;
+            color: white;
+        }
+
+        /* Navbar end... */
+
+        /* Contact Section */
+        .contact-section {
+            padding: 150px 20px;
+            text-align: center;
+            background: #ff9999;
+        }
+
+        .contact-container {
+            max-width: 900px;
+            margin: auto;
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        h2 {
+            color: crimson;
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        p {
+            font-size: 18px;
+            text-align: justify;
+            margin-bottom: 20px;
+        }
+
+        .contact-info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f2f2f2;
+            border-left: 5px solid crimson;
+            text-align: left;
+        }
+
+        .contact-info p {
+            font-size: 18px;
+        }
+
+        .contact-info i {
+            margin-right: 10px;
+            color: crimson;
+        }
+
+        /* Footer Styling */
+        footer {
+            background: #d9534f;
+            color: white;
+            padding: 40px 20px;
+            text-align: left;
+        }
+
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .footer-section h3 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid white;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .footer-section ul li {
+            margin: 8px 0;
+        }
+
+        .footer-section ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-section ul li a i {
+            margin-right: 8px;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .social-icons a {
+            font-size: 20px;
+            color: white;
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.2);
+            color: #ffcc99;
+        }
+
+        .footer-bottom {
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.3);
+            padding-top: 10px;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .footer-bottom p {
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar Start -->
+    <nav>
+        <div class="nav-container">
+            <!-- Logo: Clicking this takes the user to the home page -->
+            <a href="/" class="logo">🩸 Donate & Connect</a>
+            <!-- Navigation Links -->
+            <ul class="nav-right">
+                {% if user %}
+                <li><a href="/">Dashboard</a></li>
+                <li><a href="/about">About Us</a></li>
+                {% else %}
+                <li><a href="/about">About Us</a></li>
+                <!-- Buttons for Login and Register -->
+                <li><a href="/login" class="btn">Login</a></li>
+                <li><a href="/register_donor" class="btn register">Register</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <!-- Navigation Bar End -->
+
+    <!-- Contact Us Section -->
+    <section class="contact-section">
+        <div class="contact-container">
+            <h2>Contact Us</h2>
+            <p>
+                Have any questions? Need assistance? Get in touch with us, and we’ll be happy to help!
+            </p>
+
+            <div class="contact-info">
+                <p><i class="fas fa-envelope"></i> Email: <a
+                        href="mailto:support@donateconnect.com">support@donateconnect.com</a></p>
+                <p><i class="fas fa-phone"></i> Phone: +123 456 7890</p>
+                <p><i class="fas fa-map-marker-alt"></i> Location: Kalyan, India</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-envelope"></i> <a
+                        href="mailto:support@donateconnect.com">support@donateconnect.com</a></p>
+                <p><i class="fas fa-phone"></i> <a href="tel:+1234567890">+123 456 7890</a></p>
+                <p><i class="fas fa-map-marker-alt"></i> Kalyan, India</p>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+                    <li><a href="register.html"><i class="fas fa-user-plus"></i> Register</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2025 Donate & Connect. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Font Awesome for Icons -->
+    <script src="https://kit.fontawesome.com/8b0c105e67.js" crossorigin="anonymous"></script>
+
+</body>
+
+</html>

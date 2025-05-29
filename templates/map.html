@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donor Map</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <style>
+    body,
+    html {
+      height: 100%;
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    nav {
+      background-color: #d81b60;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    nav .logo {
+      font-size: 20px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+    }
+
+    nav .logo::before {
+      content: "🩸";
+      margin-right: 8px;
+    }
+
+    nav .actions button {
+      margin-left: 10px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .login-btn {
+      background-color: white;
+      color: #d81b60;
+    }
+
+    .register-btn {
+      background-color: black;
+      color: white;
+    }
+
+    .main {
+      display: flex;
+      height: calc(100vh - 50px);
+    }
+
+    .sidebar {
+      width: 300px;
+      background: #f9f9f9;
+      padding: 15px;
+      overflow-y: auto;
+      border-right: 1px solid #ddd;
+    }
+
+    .sidebar h3 {
+      margin-top: 0;
+      color: #d81b60;
+    }
+
+    .sidebar label {
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+
+    .sidebar select,
+    .sidebar input {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .sidebar button {
+      width: 100%;
+      padding: 10px;
+      background-color: #d81b60;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .donor {
+      background: white;
+      border: 1px solid #ccc;
+      padding: 8px;
+      border-radius: 6px;
+      margin-top: 10px;
+    }
+
+    #map {
+      flex: 1;
+    }
+
+    a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <nav>
+    <div class="logo"><a href="/">Donate & Connect</a></div>
+    <div class="actions">
+      {% if user %}
+      <!-- Show these links if the user is logged in -->
+      <a href="/" class="nav-link">Dashboard</a>
+      {% else %}
+      <button class="login-btn" onclick="location.href='/login'">Login</button>
+      <button class="register-btn" onclick="location.href='/register_donor'">Register</button>
+      {% endif %}
+
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="sidebar">
+      <h3>Search Donors</h3>
+      <label>Blood Group:</label>
+      <select id="bloodFilter">
+        <option value="">All</option>
+        <option>A+</option>
+        <option>A-</option>
+        <option>B+</option>
+        <option>B-</option>
+        <option>O+</option>
+        <option>O-</option>
+        <option>AB+</option>
+        <option>AB-</option>
+      </select>
+
+      <label>City:</label>
+      <input type="text" id="cityFilter" placeholder="Enter city name" />
+
+      <button onclick="applyFilters()">Search</button>
+      <!-- <div style="margin-top: 10px;">
+        <input type="checkbox" id="filterBloodBanks" onchange="filterMarkers()">
+        <label for="filterBloodBanks">Show Blood Banks</label>
+      </div> -->
+
+
+      <h4>Blood Banks</h4>
+      <div id="bloodBankList"></div>
+
+      <h4>Donors</h4>
+      <div id="donorList"></div>
+    </div>
+
+    <div id="map"></div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+
+    const map = L.map('map').setView([19.2183, 72.9781], 12);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    const isLoggedIn = {{ 'true' if user else 'false' }};
+    // const isLoggedIn = false; // Check if the user is logged in
+    const donorIcon = L.icon({
+      iconUrl: '/static/icons/user.png',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -30]
+    });
+
+    const bloodBankIcon = L.icon({
+      iconUrl: '/static/icons/blood-bank.png',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -30]
+    });
+
+    let allDonors = [];
+    let allBloodBanks = [];
+
+
+
+    function renderDonors(filterBG = "", filterCity = "") {
+      const donorList = document.getElementById("donorList");
+      donorList.innerHTML = ""; // Clear the donor list
+
+      const filteredDonors = allDonors.filter(d => {
+        const matchesBG = !filterBG || d.bloodgroup === filterBG;
+        const matchesCity = !filterCity || d.city.toLowerCase().includes(filterCity.toLowerCase());
+        return matchesBG && matchesCity;
+      });
+
+      if (filteredDonors.length === 0) {
+        donorList.innerHTML = "<p>No donors available.</p>";
+        return;
+      }
+
+      filteredDonors.forEach(d => {
+        // Add marker to the map
+        L.marker([d.latitude, d.longitude], { icon: donorIcon })
+          .addTo(map)
+          .bindPopup(`<b>${d.name}</b><br>Blood Group: ${d.bloodgroup}<br>City: ${d.city}`);
+
+        // Add donor details to the sidebar
+        const div = document.createElement("div");
+        div.className = "donor";
+        div.innerHTML = `<b>${d.name}</b><br>Blood Group: ${d.bloodgroup}<br>City: ${d.city}<br>Contact: ${isLoggedIn ? d.contact || "Not provided" : "Please login to see the contact details"
+          }`;
+        donorList.appendChild(div);
+      });
+    }
+
+    function renderBloodBanks() {
+      const bloodBankList = document.getElementById("bloodBankList");
+      bloodBankList.innerHTML = ""; // Clear the blood bank list
+
+      if (allBloodBanks.length === 0) {
+        bloodBankList.innerHTML = "<p>No blood banks available.</p>";
+        return;
+      }
+
+      allBloodBanks.forEach(bank => {
+        // Add marker to the map
+        L.marker([bank.latitude, bank.longitude], { icon: bloodBankIcon })
+          .addTo(map)
+          .bindPopup(`<b>${bank.name}</b><br>City: ${bank.city}`);
+
+        // Add blood bank details to the sidebar
+        const div = document.createElement("div");
+        div.className = "donor"; // Reuse the same class for styling
+        div.innerHTML = `<b>${bank.name}</b><br>City: ${bank.city}<br>Contact: ${isLoggedIn ? bank.contact || "Not provided" : "Please login to see the contact details"
+          }`;
+        bloodBankList.appendChild(div);
+      });
+    }
+
+    function applyFilters() {
+      const bg = document.getElementById("bloodFilter").value;
+      const city = document.getElementById("cityFilter").value;
+      renderDonors(bg, city);
+    }
+
+    function filterMarkers() {
+      // Clear all markers
+      map.eachLayer(layer => {
+        if (layer instanceof L.Marker && !layer._popup) map.removeLayer(layer);
+      });
+
+      // Clear the sidebar sections
+      document.getElementById("bloodBankList").innerHTML = "";
+      document.getElementById("donorList").innerHTML = "";
+
+      // Render blood banks
+      renderBloodBanks();
+
+      // Render donors
+      const bg = document.getElementById("bloodFilter").value;
+      const city = document.getElementById("cityFilter").value;
+      renderDonors(bg, city);
+    }
+
+    // Load current location
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const latlng = [pos.coords.latitude, pos.coords.longitude];
+        L.marker(latlng).addTo(map).bindPopup("Your Location").openPopup();
+        map.setView(latlng, 13);
+      });
+    }
+
+    // Fetch donors
+    fetch("/api/donors")
+      .then(res => res.json())
+      .then(data => {
+        allDonors = data;
+        renderDonors();
+      });
+
+    // Fetch blood banks
+    fetch("/api/blood_banks")
+      .then(res => res.json())
+      .then(data => {
+        allBloodBanks = data;
+        renderBloodBanks();
+      });
+  </script>
+
+</body>
+
+</html>
